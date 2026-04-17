@@ -3,253 +3,309 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>NOVΛRIX AI | Neural Systems</title>
+    <title>NOVΛRIX AI | Neural Infrastructure</title>
+    
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="https://cdn.tailwindcss.com"></script>
+    
     <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;500&family=Space+Grotesk:wght@300;700&display=swap" rel="stylesheet">
+    
     <style>
-        :root {
-            --neon-cyan: #00f2fe;
-            --deep-bg: #030303;
+        :root { --neon: #00f2fe; --bg: #010101; }
+        body { 
+            background-color: var(--bg); 
+            color: #888; 
+            font-family: 'Space Grotesk', sans-serif; 
+            overflow-x: hidden; 
         }
-        body {
-            background-color: var(--deep-bg);
-            color: #e0e0e0;
-            font-family: 'Space Grotesk', sans-serif;
-            overflow-x: hidden;
-            cursor: crosshair;
-        }
-        canvas {
-            position: fixed;
-            top: 0;
-            left: 0;
-            z-index: 0;
-            pointer-events: none;
-        }
+        canvas { position: fixed; top: 0; left: 0; z-index: 0; pointer-events: none; opacity: 0.7; }
         .mono { font-family: 'JetBrains Mono', monospace; }
         
-        .hero-glitch {
-            position: relative;
-            display: inline-block;
+        .glass {
+            background: rgba(8, 8, 8, 0.7);
+            backdrop-filter: blur(15px);
+            border: 1px solid rgba(255, 255, 255, 0.04);
+            transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
         }
-        .hero-glitch::after {
-            content: attr(data-text);
-            position: absolute;
-            left: 2px;
-            text-shadow: -1px 0 #ff00c1;
-            top: 0;
-            overflow: hidden;
-            clip: rect(0, 900px, 0, 0);
-            animation: glitch 3s infinite linear alternate-reverse;
+        .glass:hover { 
+            border-color: var(--neon); 
+            box-shadow: 0 0 30px rgba(0, 242, 254, 0.08); 
+            transform: translateY(-4px); 
         }
-
-        @keyframes glitch {
-            0% { clip: rect(44px, 9999px, 56px, 0); }
-            20% { clip: rect(12px, 9999px, 30px, 0); }
-            /* Standard glitch intervals */
-            100% { clip: rect(80px, 9999px, 92px, 0); }
-        }
-
-        .glass-panel {
-            background: rgba(10, 10, 10, 0.7);
-            backdrop-filter: blur(20px);
-            border: 1px solid rgba(255, 255, 255, 0.05);
-            box-shadow: 0 0 30px rgba(0,0,0,0.5);
-        }
-
+        
+        .neon-text { text-shadow: 0 0 12px var(--neon); color: var(--neon); }
+        
         .scanline {
-            width: 100%;
-            height: 2px;
-            background: rgba(0, 242, 254, 0.1);
-            position: fixed;
-            z-index: 10;
-            top: 0;
-            animation: scanline 8s linear infinite;
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: linear-gradient(to bottom, transparent 50%, rgba(0,0,0,0.05) 50%);
+            background-size: 100% 4px; z-index: 50; pointer-events: none;
         }
 
-        @keyframes scanline {
-            0% { top: -5%; }
-            100% { top: 100%; }
-        }
-
-        input:focus { outline: none; border-color: var(--neon-cyan); }
+        .tool-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1rem; }
     </style>
 </head>
 <body>
 
     <div class="scanline"></div>
-    <canvas id="flowfield"></canvas>
+    <canvas id="vectorField"></canvas>
 
-    <div class="relative z-20">
-        <nav class="p-8 flex justify-between items-center max-w-7xl mx-auto">
-            <div class="text-xl font-bold tracking-[0.3em] mono hero-glitch" data-text="NOVΛRIX">NOVΛRIX <span class="text-[var(--neon-cyan)]">AI</span></div>
-            <div class="flex gap-10 text-[10px] mono uppercase tracking-widest opacity-50">
-                <a href="#suite" class="hover:text-[var(--neon-cyan)] transition-colors">Core_Suite</a>
-                <a href="#access" class="hover:text-[var(--neon-cyan)] transition-colors">Early_Access</a>
+    <div class="relative z-10">
+        <nav class="p-10 flex justify-between items-center max-w-7xl mx-auto">
+            <div class="text-2xl font-bold tracking-[0.6em] neon-text mono uppercase">NOVΛRIX</div>
+            <div class="hidden md:block mono text-[10px] tracking-widest opacity-40 uppercase">
+                System_Node_v4.2 // Verified
             </div>
         </nav>
 
-        <section class="flex flex-col items-center justify-center min-h-screen text-center px-4">
-            <div class="mono text-[var(--neon-cyan)] text-xs mb-4 tracking-[0.5em] opacity-80 uppercase">Initialized Version 4.0.2</div>
-            <h1 class="text-5xl md:text-8xl font-bold mb-8 tracking-tighter">
-                Next-Gen <br/><span class="italic font-light">Autonomous</span> Operations.
+        <section class="min-h-[85vh] flex flex-col items-center justify-center text-center px-6">
+            <div class="mono text-[10px] text-[var(--neon)] mb-6 tracking-[0.4em] opacity-80 uppercase">
+                Initialized Version 4.0.2
+            </div>
+            <h1 class="text-6xl md:text-9xl font-bold text-white mb-8 tracking-tighter leading-none">
+                Autonomous <br/><span class="italic font-light opacity-40">Intelligence.</span>
             </h1>
-            <p class="max-w-xl text-gray-500 mb-12 mono text-sm leading-relaxed">
-                Deploying advanced AI protocols for sales automation, system logic, and data synthesis. Secure your position in the deployment queue.
+            <p class="max-w-xl text-gray-500 mb-12 mono text-[11px] uppercase tracking-[0.2em] leading-relaxed">
+                Deploying high-performance AI modules for global business operations and low-level system automation. Secure your access.
             </p>
             
-            <div id="access" class="w-full max-w-md glass-panel p-1 rounded-sm flex items-center border border-white/10">
-                <input type="email" id="email" placeholder="root@novarix:~$" 
-                    class="bg-transparent flex-grow px-5 py-4 mono text-sm text-white">
-                <button onclick="register()" class="bg-white text-black font-bold px-8 py-4 mono text-xs uppercase hover:bg-[var(--neon-cyan)] transition-all">
-                    Initialize Access
+            <div class="w-full max-w-md glass p-1 rounded-sm flex border border-white/10">
+                <input type="email" id="email" placeholder="USER@TERMINAL.ROOT" 
+                    class="bg-transparent flex-grow px-5 py-4 mono text-xs outline-none text-white focus:text-[var(--neon)]">
+                <button onclick="register()" id="regBtn" 
+                    class="bg-white text-black px-8 font-bold mono text-[10px] uppercase hover:bg-[var(--neon)] transition-all">
+                    Initialize
                 </button>
             </div>
-            <p id="status" class="mt-4 mono text-[10px] text-[var(--neon-cyan)] hidden uppercase tracking-widest">Packet Received. Awaiting validation...</p>
+            <p id="status" class="mt-6 mono text-[10px] text-[var(--neon)] hidden tracking-[0.3em] uppercase">
+                Uplink Successful. Welcome to the core.
+            </p>
         </section>
 
-        <section id="suite" class="max-w-7xl mx-auto px-6 py-32">
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-1 px-4">
-                <div class="glass-panel p-10 border-l-2 border-l-[var(--neon-cyan)] hover:bg-white/5 transition-all group">
-                    <span class="mono text-[10px] opacity-30">01 // SALES_FORCE</span>
-                    <h3 class="text-2xl font-bold mt-4 mb-2">Novarix Sales</h3>
-                    <p class="text-gray-500 text-sm mono mb-8">Automated pipeline generation via neural-linguistic modeling.</p>
-                    <div class="text-[10px] mono text-cyan-500/50">STATUS: [STAGING]</div>
+        <section id="about" class="max-w-7xl mx-auto px-6 py-32 border-t border-white/5">
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-20 items-center">
+                <div>
+                    <h2 class="mono text-[10px] text-[var(--neon)] mb-4 tracking-[0.5em] uppercase">Phase_01 // The Vision</h2>
+                    <h3 class="text-4xl md:text-5xl font-bold text-white mb-8 tracking-tighter">
+                        Bridging the gap between <span class="italic opacity-60">Logic</span> and <span class="text-[var(--neon)]">Execution.</span>
+                    </h3>
+                    <p class="text-gray-400 leading-relaxed mb-8 text-sm mono uppercase tracking-wider">
+                        Novarix AI isn't just another interface. We are building a native ecosystem where autonomous agents operate at the system level. Whether it's high-frequency sales outreach or kernel-level tasking, our goal is to eliminate the friction of human-computer interaction through surgical automation.
+                    </p>
+                    <div class="flex gap-6">
+                        <div class="glass p-6 rounded-sm min-w-[120px]">
+                            <span class="block text-white font-bold text-2xl">0.1s</span>
+                            <span class="text-[9px] mono opacity-40 uppercase tracking-widest">Latency_Core</span>
+                        </div>
+                        <div class="glass p-6 rounded-sm min-w-[120px]">
+                            <span class="block text-white font-bold text-2xl">10+</span>
+                            <span class="text-[9px] mono opacity-40 uppercase tracking-widest">Active_Modules</span>
+                        </div>
+                    </div>
                 </div>
-                <div class="glass-panel p-10 border-l-2 border-l-white/20 hover:bg-white/5 transition-all">
-                    <span class="mono text-[10px] opacity-30">02 // SYSTEM_CORE</span>
-                    <h3 class="text-2xl font-bold mt-4 mb-2">Kernel AI</h3>
-                    <p class="text-gray-500 text-sm mono mb-8">System-level task execution and resource management.</p>
-                    <div class="text-[10px] mono text-gray-600">STATUS: [ENCRYPTED]</div>
-                </div>
-                <div class="glass-panel p-10 border-l-2 border-l-white/20 hover:bg-white/5 transition-all">
-                    <span class="mono text-[10px] opacity-30">03 // ANALYTICS</span>
-                    <h3 class="text-2xl font-bold mt-4 mb-2">Vision Stack</h3>
-                    <p class="text-gray-500 text-sm mono mb-8">Deep-learning analysis for market and data pattern detection.</p>
-                    <div class="text-[10px] mono text-gray-600">STATUS: [LOCKED]</div>
+
+                <div class="glass p-12 relative overflow-hidden group border-l-2 border-l-[var(--neon)]">
+                    <div class="absolute top-0 right-0 p-4 mono text-[8px] opacity-20 tracking-widest">SYS_DIAGNOSTIC_RUNNING</div>
+                    <ul class="space-y-10">
+                        <li class="flex items-start gap-6">
+                            <div class="w-1.5 h-1.5 bg-[var(--neon)] mt-2 shadow-[0_0_8px_var(--neon)]"></div>
+                            <div>
+                                <span class="text-white font-bold text-lg block mb-2 tracking-tight">Autonomous Agency</span>
+                                <p class="text-[11px] text-gray-500 leading-relaxed uppercase tracking-wide">Next-gen agents that don't just simulate conversation, but execute complex tasks across local and cloud infrastructure via direct system handshake.</p>
+                            </div>
+                        </li>
+                        <li class="flex items-start gap-6">
+                            <div class="w-1.5 h-1.5 bg-[var(--neon)] mt-2 shadow-[0_0_8px_var(--neon)]"></div>
+                            <div>
+                                <span class="text-white font-bold text-lg block mb-2 tracking-tight">Neural Sales Pipelines</span>
+                                <p class="text-[11px] text-gray-500 leading-relaxed uppercase tracking-wide">Transforming cold outreach into high-fidelity warm leads. Utilizing local-inference behavioral models to scale personalized sales logic at 100x speed.</p>
+                            </div>
+                        </li>
+                        <li class="flex items-start gap-6">
+                            <div class="w-1.5 h-1.5 bg-[var(--neon)] mt-2 shadow-[0_0_8px_var(--neon)]"></div>
+                            <div>
+                                <span class="text-white font-bold text-lg block mb-2 tracking-tight">Privacy-First Architecture</span>
+                                <p class="text-[11px] text-gray-500 leading-relaxed uppercase tracking-wide">Proprietary logic designed to keep your sensitive target data encrypted. Secure, offline-capable processing ensures your intel stays off third-party servers.</p>
+                            </div>
+                        </li>
+                    </ul>
                 </div>
             </div>
         </section>
 
-        <footer class="p-20 text-center opacity-20 mono text-[10px] tracking-[0.4em]">
-            TERMINAL // NOVARIX_INTEL_SYSTEMS // 2026
+        <section class="max-w-7xl mx-auto px-6 py-32 border-t border-white/5">
+            <h2 class="mono text-[10px] mb-16 opacity-30 tracking-[1.5em] uppercase text-center">Neural_Module_Stack</h2>
+            <div class="tool-grid">
+                
+                <div class="glass p-8 rounded-sm">
+                    <div class="mono text-[9px] text-[var(--neon)] mb-4">[01] SALES_AI</div>
+                    <h3 class="text-white font-bold text-xl mb-3 tracking-tight">Novarix Outreach</h3>
+                    <p class="text-xs leading-relaxed text-gray-500 mb-6">Neural-persona sales automation for high-conversion lead generation.</p>
+                    <div class="text-[9px] mono opacity-30">STATUS: STAGING</div>
+                </div>
+
+                <div class="glass p-8 rounded-sm border-l-2 border-l-[var(--neon)]">
+                    <div class="mono text-[9px] text-[var(--neon)] mb-4">[02] KERNEL_OPS</div>
+                    <h3 class="text-white font-bold text-xl mb-3 tracking-tight">System Core</h3>
+                    <p class="text-xs leading-relaxed text-gray-500 mb-6">Autonomous task execution at the kernel level for hardware management.</p>
+                    <div class="text-[9px] mono opacity-30">STATUS: LOADING</div>
+                </div>
+
+                <div class="glass p-8 rounded-sm">
+                    <div class="mono text-[9px] text-[var(--neon)] mb-4">[03] VOICE_SYNC</div>
+                    <h3 class="text-white font-bold text-xl mb-3 tracking-tight">NovaVoice</h3>
+                    <p class="text-xs leading-relaxed text-gray-500 mb-6">Sub-100ms latency voice agents for automated customer negotiation.</p>
+                    <div class="text-[9px] mono opacity-30">STATUS: ENCRYPTED</div>
+                </div>
+
+                <div class="glass p-8 rounded-sm">
+                    <div class="mono text-[9px] text-[var(--neon)] mb-4">[04] DATA_WEAVE</div>
+                    <h3 class="text-white font-bold text-xl mb-3 tracking-tight">Web Weaver</h3>
+                    <p class="text-xs leading-relaxed text-gray-500 mb-6">Distributed web intelligence utilizing stealth proxy rotation for raw data.</p>
+                    <div class="text-[9px] mono opacity-30">STATUS: PENDING</div>
+                </div>
+
+                <div class="glass p-8 rounded-sm">
+                    <div class="mono text-[9px] text-[var(--neon)] mb-4">[05] CINEMATIC_GEN</div>
+                    <h3 class="text-white font-bold text-xl mb-3 tracking-tight">Technical Noir</h3>
+                    <p class="text-xs leading-relaxed text-gray-500 mb-6">Generative video engine optimized for technical coding aesthetics.</p>
+                    <div class="text-[9px] mono opacity-30">STATUS: LOCKED</div>
+                </div>
+
+                <div class="glass p-8 rounded-sm">
+                    <div class="mono text-[9px] text-[var(--neon)] mb-4">[06] REVENUE_FLOW</div>
+                    <h3 class="text-white font-bold text-xl mb-3 tracking-tight">Deal Closer</h3>
+                    <p class="text-xs leading-relaxed text-gray-500 mb-6">AI negotiators trained on high-performance sales psychology datasets.</p>
+                    <div class="text-[9px] mono opacity-30">STATUS: STAGING</div>
+                </div>
+
+                <div class="glass p-8 rounded-sm">
+                    <div class="mono text-[9px] text-[var(--neon)] mb-4">[07] COMP_VISION</div>
+                    <h3 class="text-white font-bold text-xl mb-3 tracking-tight">Vision Stream</h3>
+                    <p class="text-xs leading-relaxed text-gray-500 mb-6">Real-time object detection and semantic spatial analysis for logical triggers.</p>
+                    <div class="text-[9px] mono opacity-30">STATUS: INITIALIZING</div>
+                </div>
+
+                <div class="glass p-8 rounded-sm border-l-2 border-l-white/20">
+                    <div class="mono text-[9px] text-[var(--neon)] mb-4">[08] LOGIC_CHAIN</div>
+                    <h3 class="text-white font-bold text-xl mb-3 tracking-tight">Workflow Node</h3>
+                    <p class="text-xs leading-relaxed text-gray-500 mb-6">Autonomous chain-of-thought automation bridging global APIs.</p>
+                    <div class="text-[9px] mono opacity-30">STATUS: PENDING</div>
+                </div>
+
+                <div class="glass p-8 rounded-sm">
+                    <div class="mono text-[9px] text-[var(--neon)] mb-4">[09] ENGINE_LINK</div>
+                    <h3 class="text-white font-bold text-xl mb-3 tracking-tight">Sisyphus Integrator</h3>
+                    <p class="text-xs leading-relaxed text-gray-500 mb-6">C++ bridging protocols for memory-mapped AI performance in OS environments.</p>
+                    <div class="text-[9px] mono opacity-30">STATUS: ENCRYPTED</div>
+                </div>
+
+                <div class="glass p-8 rounded-sm">
+                    <div class="mono text-[9px] text-[var(--neon)] mb-4">[10] CYBER_GUARD</div>
+                    <h3 class="text-white font-bold text-xl mb-3 tracking-tight">Sentinel Guard</h3>
+                    <p class="text-xs leading-relaxed text-gray-500 mb-6">Neural firewall providing real-time automated threat mitigation.</p>
+                    <div class="text-[9px] mono opacity-30">STATUS: ACTIVE_DEV</div>
+                </div>
+
+            </div>
+        </section>
+
+        <footer class="p-20 text-center mono text-[10px] opacity-20 tracking-[0.6em]">
+            // NOVARIX_INTEL_SYSTEMS // CORE_STATION_2026 //
         </footer>
     </div>
 
     <script>
-        // --- HIGH-TECH FLOW FIELD ANIMATION ---
-        const canvas = document.getElementById('flowfield');
+        // --- SUPABASE CONFIG ---
+        const SUPABASE_URL = 'https://hrjestpbhdmywsqtrrgt.supabase.co';
+        const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhyamVzdHBiaGRteXdzcXRycmd0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzY0MDQ4NDAsImV4cCI6MjA5MTk4MDg0MH0.lSzSLML2wchHdE8ei27xSALeedHi4339QRKMldwycUw';
+        
+        const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+        async function register() {
+            const emailInput = document.getElementById('email');
+            const btn = document.getElementById('regBtn');
+            const statusMsg = document.getElementById('status');
+            const emailValue = emailInput.value.trim();
+
+            if (!emailValue || !emailValue.includes('@')) {
+                alert("ACCESS_DENIED: Invalid Terminal Address.");
+                return;
+            }
+
+            btn.innerText = "UPLOADING...";
+            btn.disabled = true;
+
+            try {
+                const { error } = await _supabase
+                    .from('novarix_waitlist')
+                    .insert([{ waitlist: emailValue }]);
+
+                if (error) throw error;
+
+                btn.innerText = "SYNCED";
+                statusMsg.classList.remove('hidden');
+                emailInput.value = "";
+
+            } catch (err) {
+                console.error("Uplink Error:", err.message);
+                btn.innerText = "FAILED";
+                btn.disabled = false;
+                alert("UPLINK_ERROR: " + err.message);
+            }
+        }
+
+        // --- VECTOR FIELD ANIMATION ---
+        const canvas = document.getElementById('vectorField');
         const ctx = canvas.getContext('2d');
-        let particles = [];
-        let width, height, field;
-        const res = 20;
+        let width, height, particles;
 
         function init() {
             width = canvas.width = window.innerWidth;
             height = canvas.height = window.innerHeight;
             particles = [];
-            for (let i = 0; i < 400; i++) particles.push(new Particle());
+            for(let i=0; i<380; i++) particles.push(new Particle());
         }
 
         class Particle {
-            constructor() {
-                this.reset();
-            }
+            constructor() { this.reset(); }
             reset() {
                 this.x = Math.random() * width;
                 this.y = Math.random() * height;
-                this.prevX = this.x;
-                this.prevY = this.y;
-                this.speed = Math.random() * 2 + 1;
-                this.color = Math.random() > 0.5 ? '#00f2fe' : '#333';
+                this.history = [];
+                this.maxLen = Math.floor(Math.random() * 20 + 5);
+                this.angle = 0;
+                this.speed = Math.random() * 1.5 + 0.2;
             }
             update() {
-                this.prevX = this.x;
-                this.prevY = this.y;
-                
-                // Flow field logic (sine-wave based for "scientific" look)
-                let angle = (Math.sin(this.x * 0.005) + Math.cos(this.y * 0.005)) * Math.PI * 2;
-                this.x += Math.cos(angle) * this.speed;
-                this.y += Math.sin(angle) * this.speed;
-
-                if (this.x < 0 || this.x > width || this.y < 0 || this.y > height) {
-                    this.reset();
-                }
+                this.angle = (Math.sin(this.x * 0.005) + Math.cos(this.y * 0.005)) * Math.PI * 2;
+                this.x += Math.cos(this.angle) * this.speed;
+                this.y += Math.sin(this.angle) * this.speed;
+                if(this.x < 0 || this.x > width || this.y < 0 || this.y > height) this.reset();
+                this.history.push({x: this.x, y: this.y});
+                if(this.history.length > this.maxLen) this.history.shift();
             }
             draw() {
                 ctx.beginPath();
-                ctx.strokeStyle = this.color;
-                ctx.lineWidth = 0.5;
-                ctx.globalAlpha = 0.3;
-                ctx.moveTo(this.prevX, this.prevY);
-                ctx.lineTo(this.x, this.y);
+                ctx.strokeStyle = '#00f2fe';
+                ctx.globalAlpha = 0.12;
+                ctx.lineWidth = 0.8;
+                if(this.history.length > 1) {
+                    ctx.moveTo(this.history[0].x, this.history[0].y);
+                    for(let p of this.history) ctx.lineTo(p.x, p.y);
+                }
                 ctx.stroke();
             }
         }
 
         function animate() {
-            // Slight clear for trailing effect
-            ctx.fillStyle = 'rgba(3, 3, 3, 0.05)';
+            ctx.fillStyle = 'rgba(1, 1, 1, 0.08)';
             ctx.fillRect(0, 0, width, height);
-            
-            particles.forEach(p => {
-                p.update();
-                p.draw();
-            });
+            particles.forEach(p => { p.update(); p.draw(); });
             requestAnimationFrame(animate);
         }
 
         window.addEventListener('resize', init);
-        init();
-        animate();
-
-        // Registration Logic
-        function register() {
-            const btn = document.querySelector('button');
-            const status = document.getElementById('status');
-            btn.innerText = "UPLOADING...";
-            setTimeout(() => {
-                status.classList.remove('hidden');
-                btn.innerText = "DONE";
-                btn.disabled = true;
-                btn.style.opacity = "0.5";
-            }, 1200);
-        }
-        // Add this line at the top of your script block if not already there
-const SUPABASE_URL = 'https://hrjestpbhdmywsqtrrgt.supabase.co';
-const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhyamVzdHBiaGRteXdzcXRycmd0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzY0MDQ4NDAsImV4cCI6MjA5MTk4MDg0MH0.lSzSLML2wchHdE8ei27xSALeedHi4339QRKMldwycUw';
-const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
-
-async function register() {
-    const emailField = document.querySelector('input[type="email"]');
-    const btn = document.querySelector('button');
-    const status = document.getElementById('status');
-    const email = emailField.value;
-
-    if (!email || !email.includes('@')) {
-        alert("Enter a valid terminal ID (email).");
-        return;
-    }
-
-    btn.innerText = "UPLOADING...";
-
-    // Real Supabase Insert
-    const { data, error } = await supabase
-        .from('waitlist')
-        .insert([{ email: email }]);
-
-    if (error) {
-        console.error(error);
-        btn.innerText = "FAILED";
-        status.innerText = "SYSTEM ERROR: UPLINK INTERRUPTED";
-        status.classList.remove('hidden');
-    } else {
-        status.classList.remove('hidden');
-        status.innerText = "PACKET RECEIVED. WELCOME TO NOVARIX.";
-        btn.innerText = "SYNCED";
-        btn.disabled = true;
-        emailField.value = "";
-    }
-}
+        init(); animate();
     </script>
 </body>
 </html>
